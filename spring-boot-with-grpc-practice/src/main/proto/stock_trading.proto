@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package stock.trading;
+// Create the separate java class file
+option java_multiple_files = true;
+// package for each request and response
+option  java_package = "com.grpc.practice";
+// Club all individual call into one class
+option  java_outer_classname = "StockTradingProto";
+
+// Use service for creating the service
+service  StockTradingService {
+    // UNARY - RPC - get current stock price
+    rpc getStockPrice(StockRequest) returns (StockResponse);
+}
+
+// Use message for creating the class
+// Note in grpc we can use the path variable or request param
+message StockRequest {
+    string stock_symbol=1; //=1 -> represents the position
+}
+
+message StockResponse {
+    string stock_symbol=1;
+    double price=2;
+    string timestamp=3;
+}

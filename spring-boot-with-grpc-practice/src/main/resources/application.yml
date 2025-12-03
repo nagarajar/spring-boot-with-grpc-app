@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+grpc:
+  server:
+    port: 9090
+    enable-reflection: true # Imp then only will able to test grpc api's in postman/any third party tools.
+
+spring:
+  application:
+    name: spring-boot-with-grpc-practice
+
+  datasource:
+    url: jdbc:h2:mem:stocks
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
