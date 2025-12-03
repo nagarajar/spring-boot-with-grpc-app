@@ -10,14 +10,17 @@ option  java_outer_classname = "StockTradingProto";
 
 // Use service for creating the service
 service  StockTradingService {
-    // UNARY - RPC - get current stock price
+    // UNARY - RPC - get current stock price --> One request one response
     rpc getStockPrice(StockRequest) returns (StockResponse);
+
+    // Server streaming RPC -> get multiple stock prices --> One request multiple responses
+    rpc subscribeStockPrice(StockRequest) returns (stream StockResponse);
 }
 
 // Use message for creating the class
 // Note in grpc we can use the path variable or request param
 message StockRequest {
-    string stock_symbol=1; //=1 -> represents the position
+    string stock_symbol=1; //=1 -> represents the field position
 }
 
 message StockResponse {

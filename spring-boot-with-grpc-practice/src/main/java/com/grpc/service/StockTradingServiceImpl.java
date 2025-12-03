@@ -8,6 +8,9 @@ import com.grpc.repo.StockRepository;
 import io.grpc.stub.StreamObserver;
 import org.springframework.grpc.server.service.GrpcService;
 
+import java.time.Instant;
+import java.util.Random;
+
 @GrpcService
 public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradingServiceImplBase {
     private final StockRepository stockRepository;
@@ -30,5 +33,25 @@ public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradin
                 .build();
         responseObserver.onNext(stockResponse);
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void subscribeStockPrice(StockRequest request, StreamObserver<StockResponse> responseObserver) {
+        String symbol = request.getStockSymbol();
+        try {
+            for (int i = 0; i < 10; i++) {
+                StockResponse stockResponse = StockResponse.newBuilder()
+                        .setStockSymbol(symbol)
+                        .setPrice(new Random().nextDouble(200))
+                        .setTimestamp(Instant.now().toString())
+                        .build();
+
+                responseObserver.onNext(stockResponse);
+                Thread.sleep(1000);
+            }
+            responseObserver.onCompleted();
+        } catch (Exception ex) {
+            responseObserver.onError(ex);
+        }
     }
 }

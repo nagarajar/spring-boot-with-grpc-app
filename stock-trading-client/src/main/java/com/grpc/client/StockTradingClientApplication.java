@@ -20,6 +20,12 @@ public class StockTradingClientApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // Unary grpc calling
+        System.out.println("**************** Unary grpc calling *******************");
         System.out.println("Server Response: "+stockClientService.getStockPrice("AAPL"));
+
+        System.out.println("**************** Server streaming - calling *******************");
+        // Server streaming grpc call
+        stockClientService.subscribeStockPrice("AAPL");
     }
 }
