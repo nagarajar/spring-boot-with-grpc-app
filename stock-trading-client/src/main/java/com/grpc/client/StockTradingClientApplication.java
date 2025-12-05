@@ -27,5 +27,9 @@ public class StockTradingClientApplication implements CommandLineRunner {
         System.out.println("**************** Server streaming - calling *******************");
         // Server streaming grpc call
         stockClientService.subscribeStockPrice("AAPL");
+        Thread.sleep(1000*15);
+        System.out.println("**************** Client streaming - calling *******************");
+        // Client streaming grpc call
+        stockClientService.placeBulkOrders();
     }
 }

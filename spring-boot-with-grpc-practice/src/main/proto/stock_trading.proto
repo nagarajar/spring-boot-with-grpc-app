@@ -10,11 +10,14 @@ option  java_outer_classname = "StockTradingProto";
 
 // Use service for creating the service
 service  StockTradingService {
-    // UNARY - RPC - get current stock price --> One request one response
+    // UNARY - RPC - get current stock price --> One request return one response
     rpc getStockPrice(StockRequest) returns (StockResponse);
 
-    // Server streaming RPC -> get multiple stock prices --> One request multiple responses
+    // Server streaming RPC -> get multiple stock prices --> One request return multiple responses
     rpc subscribeStockPrice(StockRequest) returns (stream StockResponse);
+
+    // Client streaming RPC -> Send one order summary for multiple stock order request from client--> Multiple request return one response
+    rpc bulkStockOrder(stream StockOrder) returns (OrderSummary);
 }
 
 // Use message for creating the class
@@ -27,4 +30,18 @@ message StockResponse {
     string stock_symbol=1;
     double price=2;
     string timestamp=3;
+}
+
+message StockOrder {
+    string order_id=1;
+    string stock_symbol=2;
+    int32 quantity=3;
+    double price=4;
+    string order_type=5; //BUY or SELL
+}
+
+message OrderSummary {
+    int32 total_order=1;
+    double total_amount=2;
+    int32 success_count=3;
 }
