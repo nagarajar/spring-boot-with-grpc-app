@@ -18,6 +18,9 @@ service  StockTradingService {
 
     // Client streaming RPC -> Send one order summary for multiple stock order request from client--> Multiple request return one response
     rpc bulkStockOrder(stream StockOrder) returns (OrderSummary);
+
+    // Bidirectional streaming RPC -> Send multiple trade status for multiple stock order request from client--> Multiple request return multiple response
+    rpc liveTrading(stream StockOrder) returns (stream TradeStatus);
 }
 
 // Use message for creating the class
@@ -44,4 +47,11 @@ message OrderSummary {
     int32 total_order=1;
     double total_amount=2;
     int32 success_count=3;
+}
+
+message TradeStatus {
+    string order_id=1;
+    string status=2; //execute, failed, pending
+    string message=3; // reason if failed or success message
+    string timestamp=4;
 }

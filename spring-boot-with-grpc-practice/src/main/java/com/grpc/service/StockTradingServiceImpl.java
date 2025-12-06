@@ -7,6 +7,8 @@ import io.grpc.stub.StreamObserver;
 import org.springframework.grpc.server.service.GrpcService;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 @GrpcService
@@ -80,6 +82,39 @@ public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradin
                         .setSuccessCount(successCount)
                         .build();
                 responseObserver.onNext(orderSummary);
+                responseObserver.onCompleted();
+            }
+        };
+    }
+
+    @Override
+    public StreamObserver<StockOrder> liveTrading(StreamObserver<TradeStatus> responseObserver) {
+        return new StreamObserver<StockOrder>() {
+            @Override
+            public void onNext(StockOrder stockOrder) {
+                System.out.println("Received stock order: "+stockOrder);
+                String status = "EXECUTED";
+                String message = "Order placed successfully ..!";
+                if(stockOrder.getQuantity()<=0){
+                    status = "FAILED";
+                    message = "Invalid quantity";
+                }
+                TradeStatus tradeStatus = TradeStatus.newBuilder()
+                        .setOrderId(stockOrder.getOrderId())
+                        .setStatus(status)
+                        .setMessage(message)
+                        .setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                        .build();
+                responseObserver.onNext(tradeStatus);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.out.println("Error occurred while processing stock order message: "+throwable.getMessage());
+            }
+
+            @Override
+            public void onCompleted() {
                 responseObserver.onCompleted();
             }
         };
